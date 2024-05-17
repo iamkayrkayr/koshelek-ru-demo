@@ -31,5 +31,42 @@
     </v-app>
   </NuxtLayout>
 </template>
-<script setup lang="ts">
+
+<script setup>
+
+const orderBookStore = useOrderBookStore();
+
+onMounted(() => {
+  if (isClientSide()) {
+    setTimeout(() => {
+      orderBookStore.connect();
+    });
+  }
+});
+
+onUnmounted(() => {
+  if (isClientSide()) {
+    setTimeout(() => {
+      orderBookStore.disconnect();
+    });
+  }
+});
+
 </script>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.15s;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translate(16px, 0);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translate(-16px, 0);
+}
+</style>
