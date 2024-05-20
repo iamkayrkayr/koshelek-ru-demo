@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     pages: true,
     runtimeConfig: {
         public: {
-            binanceApiDepthWsUrl: 'wss://stream.binance.com:9443/ws/bnbbtc@depth',
+            binanceApiDepthWsUrl: 'wss://stream.binance.com:9443/ws/{symbol}@depth',
             binanceApiDepthSnapshotUrl: 'https://api.binance.com/api/v3/depth',
         },
     },

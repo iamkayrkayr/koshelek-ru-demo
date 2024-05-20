@@ -21,6 +21,7 @@
         :key="row[0]"
         :entry="row"
         :total-erp="totalErp(row)"
+        :theme="theme"
     />
     </tbody>
   </v-table>
@@ -32,6 +33,11 @@ const props = defineProps({
   rows: {
     type: Array,
     required: true,
+  },
+  theme: {
+    validator(value) {
+      return ['ask', 'bid'].includes(value)
+    },
   },
 });
 

@@ -1,5 +1,5 @@
 import {useFetch} from "#app";
-import {urlWithQuery} from "~/utils/support.js";
+import {replaceWildcards, urlWithQuery} from "~/utils/support.js";
 
 class BinanceApi {
     /**
@@ -20,22 +20,39 @@ class BinanceApi {
      */
     _binanceApiDepthSnapshotUrl = undefined;
 
+    /**
+     * @type {Function}
+     * @private
+     */
+    _onMessageListener = undefined;
+
     constructor({
                     binanceApiDepthWsUrl,
                     binanceApiDepthSnapshotUrl,
+                    onMessage = undefined,
                 }) {
         this._binanceApiDepthWsUrl = binanceApiDepthWsUrl;
         this._binanceApiDepthSnapshotUrl = binanceApiDepthSnapshotUrl;
+        this._onMessageListener = onMessage || (() => {
+        });
     }
 
-    connect() {
+    connect({
+                symbol,
+                onOpen = undefined,
+            }) {
         if (this._socketInstance) {
             return;
         }
 
-        let socket = new WebSocket(this._binanceApiDepthWsUrl);
+        const wsUrl = replaceWildcards(this._binanceApiDepthWsUrl, {
+            symbol: symbol.toLowerCase(),
+        });
+        let socket = new WebSocket(wsUrl);
 
-        socket.onopen = () => this._onOpen();
+        socket.onopen = () => {
+            onOpen && onOpen();
+        };
         socket.onmessage = (ev) => this._onMessage(ev);
         socket.onerror = (ev) => this._onError(ev);
         socket.onclose = (ev) => this._onClose(ev);
@@ -52,24 +69,26 @@ class BinanceApi {
         this._socketInstance = undefined;
     }
 
-    async fetchDepthSnapshot() {
+    async fetchDepthSnapshot({
+                                 limit = 16,
+                             } = {}) {
         return useFetch(
             urlWithQuery(
                 this._binanceApiDepthSnapshotUrl,
                 q => {
                     q.set('symbol', 'BTCUSDT');
-                    q.set('limit', 16);
+                    q.set('limit', limit);
                 }
             )
         );
     }
 
-    _onOpen() {
-        console.log('_onOpen');
-    }
-
     _onMessage(ev) {
-        console.log('_onMessage');
+        const {
+            data,
+        } = ev;
+        const decoded = JSON.parse(data);
+        this._onMessageListener(decoded, ev);
     }
 
     _onError(ev) {

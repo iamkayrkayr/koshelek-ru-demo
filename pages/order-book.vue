@@ -2,14 +2,28 @@
   <div
       class="d-flex flex-row ga-4"
   >
-    <OrderTable
-        class="flex-1-0"
-        :rows="orderBookStore.bids"
-    />
-    <OrderTable
-        class="flex-1-0"
-        :rows="orderBookStore.asks"
-    />
+    <div
+        class="flex-1-1-100"
+    >
+      <h2 class="mb-4">
+        Bid
+      </h2>
+      <OrderTable
+          :rows="orderBookStore.bids"
+          theme="bid"
+      />
+    </div>
+    <div
+        class="flex-1-1-100"
+    >
+      <h2 class="mb-4">
+        Ask
+      </h2>
+      <OrderTable
+          :rows="orderBookStore.asks"
+          theme="ask"
+      />
+    </div>
   </div>
 </template>
 
