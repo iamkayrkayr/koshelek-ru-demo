@@ -9,7 +9,7 @@
         Bid
       </h2>
       <OrderTable
-          :rows="orderBookStore.bids"
+          :rows="orderBookStore.bidsSlice"
           theme="bid"
       />
     </div>
@@ -20,7 +20,7 @@
         Ask
       </h2>
       <OrderTable
-          :rows="orderBookStore.asks"
+          :rows="orderBookStore.asksSlice"
           theme="ask"
       />
     </div>

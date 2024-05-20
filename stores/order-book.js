@@ -13,9 +13,13 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             bids: [],
             asks: [],
             displayConfig: {
-                limit: 12,
+                limit: 15,
             },
         });
+    },
+    getters: {
+        bidsSlice: state => state.bids.slice(0, state.displayConfig.limit),
+        asksSlice: state => state.asks.slice(0, state.displayConfig.limit),
     },
     actions: {
         async connect() {
@@ -54,7 +58,7 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             const {
                 data,
             } = await this._binanceApiInstance.fetchDepthSnapshot({
-                limit: this.displayConfig.limit,
+                symbol: this.symbol,
             });
             const response = data.value;
             this.hadFirstMatchingEvent = false;
@@ -83,14 +87,22 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             this.hadFirstMatchingEvent = true;
         },
         _patchOrders(decoded) {
-            this.bids = [
-                ...decoded.b,
-                ...this.bids,
-            ].slice(0, this.displayConfig.limit);
-            this.asks = [
-                ...decoded.a,
-                ...this.asks,
-            ].slice(0, this.displayConfig.limit);
+            this.bids = this._binanceApiInstance.mergeEntries(
+                toRaw(this.bids),
+                decoded.b,
+                {
+                    limit: this.displayConfig.limit,
+                    isDesc: true,
+                },
+            );
+            this.asks = this._binanceApiInstance.mergeEntries(
+                toRaw(this.asks),
+                decoded.a,
+                {
+                    limit: this.displayConfig.limit,
+                    isDesc: false,
+                },
+            );
         },
     },
 })

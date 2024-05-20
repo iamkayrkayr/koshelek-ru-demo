@@ -4,10 +4,10 @@
   >
     <thead>
     <tr>
-      <th>
+      <th class="w-25">
         Price
       </th>
-      <th class="text-end">
+      <th class="w-25 text-end">
         Quantity
       </th>
       <th class="text-end">
@@ -20,7 +20,7 @@
         v-for="row in rows"
         :key="row[0]"
         :entry="row"
-        :total-erp="totalErp(row)"
+        :quantity-erp="quantityErp(row)"
         :theme="theme"
     />
     </tbody>
@@ -41,23 +41,27 @@ const props = defineProps({
   },
 });
 
-const minTotal = computed(() => {
-  return Math.min(...(props.rows.map(rowTotal)));
+const minQuantity = computed(() => {
+  return Math.min(...(props.rows.map(rowQuantity)));
 });
-const maxTotal = computed(() => {
-  return Math.max(...(props.rows.map(rowTotal)));
+const maxQuantity = computed(() => {
+  return Math.max(...(props.rows.map(rowQuantity)));
 });
 
-function totalErp(row) {
-  const range = (maxTotal.value - minTotal.value);
+function quantityErp(row) {
+  const range = (maxQuantity.value - minQuantity.value);
   if (range === 0) {
     return 0;
   }
-  return (rowTotal(row) - minTotal.value) / range;
+  return (rowQuantity(row) - minQuantity.value) / range;
 }
 
 function rowTotal(row) {
   return row[0] * row[1];
+}
+
+function rowQuantity(row) {
+  return row[1];
 }
 
 </script>

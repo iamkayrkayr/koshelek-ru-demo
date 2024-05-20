@@ -17,7 +17,7 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  totalErp: {
+  quantityErp: {
     type: Number,
     required: true,
   },
@@ -44,7 +44,7 @@ const totalDisplay = computed(() => {
 });
 
 function makeRowBackgroundImage() {
-  const percentage = props.totalErp * 100;
+  const percentage = Math.pow(props.quantityErp, .25) * 100;
   switch (props.theme) {
     case 'ask':
       return `linear-gradient(90deg, #F4433620 ${percentage}%, transparent ${percentage}%)`;

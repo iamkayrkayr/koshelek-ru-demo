@@ -1,5 +1,5 @@
 import {useFetch} from "#app";
-import {replaceWildcards, urlWithQuery} from "~/utils/support.js";
+import {replaceWildcards, sortArrayBy, urlWithQuery} from "~/utils/support.js";
 
 class BinanceApi {
     /**
@@ -19,6 +19,12 @@ class BinanceApi {
      * @private
      */
     _binanceApiDepthSnapshotUrl = undefined;
+
+    /**
+     * @type {Number}
+     * @private
+     */
+    _hardLimit = 1000;
 
     /**
      * @type {Function}
@@ -70,17 +76,34 @@ class BinanceApi {
     }
 
     async fetchDepthSnapshot({
-                                 limit = 16,
+                                 symbol,
+                                 limit = this._hardLimit,
                              } = {}) {
         return useFetch(
             urlWithQuery(
                 this._binanceApiDepthSnapshotUrl,
                 q => {
-                    q.set('symbol', 'BTCUSDT');
+                    q.set('symbol', symbol);
                     q.set('limit', limit);
                 }
             )
         );
+    }
+
+    sanitizeEntries(entries) {
+        return entries.filter(entry => (entry[1] > 0));
+    }
+
+    mergeEntries(original, append, {
+        isDesc = false,
+    } = {}) {
+        const resultMap = new Map(original.map(e => [e[0], e]));
+        append.forEach(entry => {
+            resultMap.set(entry[0], entry);
+        });
+        const cleanMergedEntries = this.sanitizeEntries([...resultMap.values()]);
+        const sortedEntries = sortArrayBy(cleanMergedEntries, 0, isDesc);
+        return sortedEntries.slice(0, this._hardLimit);
     }
 
     _onMessage(ev) {
