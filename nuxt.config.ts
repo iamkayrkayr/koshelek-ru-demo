@@ -11,6 +11,12 @@ export default defineNuxtConfig({
     build: {
         transpile: ['vuetify'],
     },
+    components: [
+        {
+            path: '~/components',
+            pathPrefix: false,
+        },
+    ],
     devtools: {
         enabled: true,
     },
@@ -27,6 +33,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             binanceApiDepthWsUrl: 'wss://stream.binance.com:9443/ws/bnbbtc@depth',
+            binanceApiDepthSnapshotUrl: 'https://api.binance.com/api/v3/depth',
         },
     },
     vite: {

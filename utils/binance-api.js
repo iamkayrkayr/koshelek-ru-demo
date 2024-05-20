@@ -1,3 +1,6 @@
+import {useFetch} from "#app";
+import {urlWithQuery} from "~/utils/support.js";
+
 class BinanceApi {
     /**
      * @type {WebSocket}
@@ -11,14 +14,21 @@ class BinanceApi {
      */
     _binanceApiDepthWsUrl = undefined;
 
+    /**
+     * @type {String}
+     * @private
+     */
+    _binanceApiDepthSnapshotUrl = undefined;
+
     constructor({
                     binanceApiDepthWsUrl,
+                    binanceApiDepthSnapshotUrl,
                 }) {
         this._binanceApiDepthWsUrl = binanceApiDepthWsUrl;
+        this._binanceApiDepthSnapshotUrl = binanceApiDepthSnapshotUrl;
     }
 
     connect() {
-        console.info('connect');
         if (this._socketInstance) {
             return;
         }
@@ -40,6 +50,18 @@ class BinanceApi {
 
         this._socketInstance.close();
         this._socketInstance = undefined;
+    }
+
+    async fetchDepthSnapshot() {
+        return useFetch(
+            urlWithQuery(
+                this._binanceApiDepthSnapshotUrl,
+                q => {
+                    q.set('symbol', 'BTCUSDT');
+                    q.set('limit', 16);
+                }
+            )
+        );
     }
 
     _onOpen() {
