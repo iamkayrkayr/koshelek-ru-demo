@@ -1,7 +1,7 @@
 <template>
   <div class="pt-8">
     <h1
-        class="mb-4"
+        class="mb-4 text-h5 text-sm-h4"
     >Настройки</h1>
 
     <v-row>
@@ -9,7 +9,7 @@
           cols="12"
           md="6"
       >
-        <h2 class="mb-4">
+        <h2 class="mb-4 text-h6 text-sm-h5">
           Валютная пара
         </h2>
 

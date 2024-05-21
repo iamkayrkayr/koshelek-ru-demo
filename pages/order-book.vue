@@ -1,16 +1,50 @@
 <template>
   <div class="pt-8">
     <h1
-        class="mb-4"
+        class="mb-4 text-h5 text-sm-h4"
     >Биржевой стакан - {{ orderBookStore.selectedSymbolInfo.title }}</h1>
+
+    <v-sheet
+        class="d-block d-sm-none"
+    >
+      <v-slide-group
+          v-model="selectedView"
+      >
+        <v-slide-group-item
+            v-slot="{ isSelected }"
+        >
+          <v-btn
+              :color="isSelected ? 'primary' : undefined"
+              class="ma-2"
+              rounded
+              @click="selectedView = 0"
+          >
+            Bid
+          </v-btn>
+        </v-slide-group-item>
+        <v-slide-group-item
+            v-slot="{ isSelected }"
+        >
+          <v-btn
+              :color="isSelected ? 'primary' : undefined"
+              class="ma-2"
+              rounded
+              @click="selectedView = 1"
+          >
+            Ask
+          </v-btn>
+        </v-slide-group-item>
+      </v-slide-group>
+    </v-sheet>
 
     <div
         class="d-flex flex-row ga-4"
     >
       <div
+          v-if="smAndUp || (selectedView === 0)"
           class="flex-1-1-100"
       >
-        <h2 class="mb-4">
+        <h2 class="mb-4 d-none d-sm-block text-h6 text-sm-h5">
           Bid
         </h2>
         <OrderTable
@@ -19,9 +53,10 @@
         />
       </div>
       <div
+          v-if="smAndUp || (selectedView === 1)"
           class="flex-1-1-100"
       >
-        <h2 class="mb-4">
+        <h2 class="mb-4 d-none d-sm-block text-h6 text-sm-h5">
           Ask
         </h2>
         <OrderTable
@@ -35,6 +70,14 @@
 
 <script setup>
 
+import {useDisplay} from "vuetify";
+
 const orderBookStore = useOrderBookStore();
+
+const {
+  smAndUp,
+} = useDisplay();
+
+const selectedView = ref(0);
 
 </script>

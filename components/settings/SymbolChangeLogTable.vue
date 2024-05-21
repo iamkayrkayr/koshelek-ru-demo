@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h3 class="mb-4">
+    <h3 class="mb-4 text-body-1 text-sm-h6">
       История изменений валютной пары
     </h3>
 
     <ClientOnly>
-      <h5 class="mb-3">Часовой пояс: {{ displayTz }}</h5>
+      <p class="mb-3 text-body-2">Часовой пояс: {{ displayTz }}</p>
 
       <v-data-iterator
           :items="items"
@@ -39,7 +39,7 @@
             class="ml-auto"
             @click="$emit('clear')"
         >
-          Clear
+          Очистить
         </v-btn>
       </div>
 

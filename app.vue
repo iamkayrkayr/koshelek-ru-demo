@@ -11,16 +11,22 @@
                 src="/img/logo.svg"
             />
           </nuxt-link>
+
           <v-spacer/>
-          <v-btn
-              to="/settings"
-          >Настройки
-          </v-btn>
-          <v-btn
-              to="/order-book"
-          >Order Book
-          </v-btn>
+
+          <nav class="d-none d-sm-block">
+            <v-btn
+                to="/settings"
+            >Настройки
+            </v-btn>
+            <v-btn
+                to="/order-book"
+            >Order Book
+            </v-btn>
+          </nav>
+
           <v-spacer/>
+
         </v-container>
       </v-toolbar>
 
@@ -30,40 +36,23 @@
         </v-container>
       </v-main>
 
-      <v-footer
-          class="flex-0-0"
+      <TheFooter
+          class="d-none d-sm-flex"
+      />
+
+      <v-bottom-navigation
+          class="d-flex d-sm-none"
       >
-        <v-container>
+        <v-btn
+            to="/settings"
+        >Настройки
+        </v-btn>
+        <v-btn
+            to="/order-book"
+        >Order Book
+        </v-btn>
+      </v-bottom-navigation>
 
-          <v-btn
-              v-if="orderBookStore.isBusyWsConnecting"
-              size="small"
-              loading
-          />
-          <v-btn
-              v-else-if="orderBookStore.isWsConnected"
-              size="small"
-              @click="() => orderBookStore.disconnect()"
-          >
-            Disconnect WebSocket
-          </v-btn>
-          <v-btn
-              v-else
-              size="small"
-              @click="() => orderBookStore.connect()"
-          >
-            Connect WebSocket
-          </v-btn>
-
-          <v-btn
-              size="small"
-              class="ms-2"
-              @click="() => orderBookStore.refreshSnapshot()"
-          >
-            Refresh snapshot
-          </v-btn>
-        </v-container>
-      </v-footer>
     </v-app>
   </NuxtLayout>
 </template>
