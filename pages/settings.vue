@@ -33,6 +33,7 @@
       >
         <SymbolChangeLogTable
             :items="orderBookStore.symbolChangeLog.items"
+            :items-per-page="orderBookStore.symbolChangeLog.perPage"
             @clear="() => orderBookStore.clearSymbolChangeLog()"
         />
       </v-col>

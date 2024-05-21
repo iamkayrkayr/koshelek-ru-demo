@@ -24,7 +24,7 @@ export function sortArrayBy(arr, key, isDesc = false) {
     return arr;
 }
 
-export function jsonDecodeSafe(input, fallback) {
+export function jsonDecodeSafe(input, fallback = undefined) {
     try {
         return JSON.parse(input);
     } catch (err) {

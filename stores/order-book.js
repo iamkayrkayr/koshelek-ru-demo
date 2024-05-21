@@ -28,7 +28,7 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             symbolChangeLog: {
                 items: [],
                 hardLimit: 256,
-                perPage: 8,
+                perPage: 10,
             },
             //
             lastUpdateId: undefined,
@@ -151,7 +151,7 @@ export const useOrderBookStore = defineStore('orderBookStore', {
                 to: symbol,
                 at: changedAt,
             });
-            while (this.symbolChangeLog.items.length >= this.symbolChangeLog.hardLimit) {
+            while (this.symbolChangeLog.items.length > this.symbolChangeLog.hardLimit) {
                 this.symbolChangeLog.items.pop();
             }
             this._persistState();
@@ -172,7 +172,7 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             if (!isClientSide()) {
                 return;
             }
-            const symbolChangeLog = jsonDecodeSafe(localStorage.getItem('symbolChangeLog'), []);
+            const symbolChangeLog = jsonDecodeSafe(localStorage.getItem('symbolChangeLog')) || [];
             this.symbolChangeLog.items = symbolChangeLog.map((e, i) => {
                 return {
                     id: `${e[2]}:${i}`,
