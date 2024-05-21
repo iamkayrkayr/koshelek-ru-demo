@@ -7,7 +7,24 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             _binanceApiInstance: undefined,
             isWsConnected: false,
             isBusyWsConnecting: false,
-            symbol: 'BTCUSDT',
+            //
+            symbolOptions: [
+                {
+                    title: 'BTC/USDT',
+                    value: 'btcusdt',
+                },
+                {
+                    title: 'BNB/BTC',
+                    value: 'bnbbtc',
+                },
+                {
+                    title: 'ETH/BTC',
+                    value: 'ethbtc',
+                },
+            ],
+            selectedSymbolKey: 'btcusdt',
+            isBusyChangingSymbol: false,
+            //
             lastUpdateId: undefined,
             hadFirstMatchingEvent: false,
             bids: [],
@@ -20,9 +37,11 @@ export const useOrderBookStore = defineStore('orderBookStore', {
     getters: {
         bidsSlice: state => state.bids.slice(0, state.displayConfig.limit),
         asksSlice: state => state.asks.slice(0, state.displayConfig.limit),
+        symbol: state => state.selectedSymbolKey,
+        selectedSymbolInfo: state => state.symbolOptions.find(option => (option.value === state.selectedSymbolKey)),
     },
     actions: {
-        async connect() {
+        async connect(onOpen = undefined) {
             this.isBusyWsConnecting = true;
             if (this._binanceApiInstance === undefined) {
                 const {
@@ -39,20 +58,25 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             }
             this._binanceApiInstance.connect({
                 symbol: this.symbol,
-                onOpen: () => {
-                    this.refreshSnapshot();
+                onOpen: async () => {
+                    await this.refreshSnapshot();
                     this.isWsConnected = true;
                     this.isBusyWsConnecting = false;
+                    onOpen && onOpen();
                 },
             });
         },
-        disconnect() {
+        disconnect(onClose = undefined) {
             this.isWsConnected = false;
             this.lastUpdateId = undefined;
             this.hadFirstMatchingEvent = false;
             this.bids = [];
             this.asks = [];
-            this._binanceApiInstance.disconnect();
+            this._binanceApiInstance.disconnect({
+                onClose: () => {
+                    onClose && onClose();
+                }
+            });
         },
         async refreshSnapshot() {
             const {
@@ -103,6 +127,15 @@ export const useOrderBookStore = defineStore('orderBookStore', {
                     isDesc: false,
                 },
             );
+        },
+        updateSymbol(symbol) {
+            this.isBusyChangingSymbol = true;
+            this.selectedSymbolKey = symbol;
+            this.disconnect(() => {
+                this.connect(() => {
+                    this.isBusyChangingSymbol = false;
+                });
+            });
         },
     },
 })

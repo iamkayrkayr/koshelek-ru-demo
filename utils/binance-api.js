@@ -61,16 +61,20 @@ class BinanceApi {
         };
         socket.onmessage = (ev) => this._onMessage(ev);
         socket.onerror = (ev) => this._onError(ev);
-        socket.onclose = (ev) => this._onClose(ev);
 
         this._socketInstance = socket;
     }
 
-    disconnect() {
+    disconnect({
+                   onClose = undefined,
+               } = {}) {
         if (!this._socketInstance) {
             return;
         }
 
+        this._socketInstance.onclose = () => {
+            onClose && onClose();
+        };
         this._socketInstance.close();
         this._socketInstance = undefined;
     }
@@ -83,7 +87,7 @@ class BinanceApi {
             urlWithQuery(
                 this._binanceApiDepthSnapshotUrl,
                 q => {
-                    q.set('symbol', symbol);
+                    q.set('symbol', symbol.toUpperCase());
                     q.set('limit', limit);
                 }
             )
@@ -115,11 +119,7 @@ class BinanceApi {
     }
 
     _onError(ev) {
-        console.log('_onError', ev);
-    }
-
-    _onClose(ev) {
-        console.log('_onClose', ev);
+        console.error('error connecting to ws:', ev);
     }
 }
 
