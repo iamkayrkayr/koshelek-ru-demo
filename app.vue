@@ -43,14 +43,14 @@
           <v-btn
               v-else-if="orderBookStore.isWsConnected"
               size="small"
-              @click="orderBookStore.disconnect"
+              @click="() => orderBookStore.disconnect()"
           >
             Disconnect WebSocket
           </v-btn>
           <v-btn
               v-else
               size="small"
-              @click="orderBookStore.connect"
+              @click="() => orderBookStore.connect()"
           >
             Connect WebSocket
           </v-btn>
@@ -58,7 +58,7 @@
           <v-btn
               size="small"
               class="ms-2"
-              @click="orderBookStore.refreshSnapshot"
+              @click="() => orderBookStore.refreshSnapshot()"
           >
             Refresh snapshot
           </v-btn>
@@ -75,6 +75,7 @@ const orderBookStore = useOrderBookStore();
 onMounted(() => {
   if (isClientSide()) {
     setTimeout(() => {
+      orderBookStore.loadPersistedState();
       orderBookStore.connect();
     });
   }

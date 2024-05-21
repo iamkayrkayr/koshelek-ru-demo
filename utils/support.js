@@ -23,3 +23,12 @@ export function sortArrayBy(arr, key, isDesc = false) {
     arr.sort((e1, e2) => ((e1[key] - e2[key]) * (isDesc ? -1 : 1)));
     return arr;
 }
+
+export function jsonDecodeSafe(input, fallback) {
+    try {
+        return JSON.parse(input);
+    } catch (err) {
+        //
+    }
+    return fallback;
+}

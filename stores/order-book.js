@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import BinanceApi from "~/utils/binance-api.js";
+import {isClientSide, jsonDecodeSafe} from "~/utils/support.js";
 
 export const useOrderBookStore = defineStore('orderBookStore', {
     state: () => {
@@ -24,6 +25,11 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             ],
             selectedSymbolKey: 'btcusdt',
             isBusyChangingSymbol: false,
+            symbolChangeLog: {
+                items: [],
+                hardLimit: 256,
+                perPage: 8,
+            },
             //
             lastUpdateId: undefined,
             hadFirstMatchingEvent: false,
@@ -130,11 +136,50 @@ export const useOrderBookStore = defineStore('orderBookStore', {
         },
         updateSymbol(symbol) {
             this.isBusyChangingSymbol = true;
+            const prevSymbolKey = toRaw(this.selectedSymbolKey);
             this.selectedSymbolKey = symbol;
             this.disconnect(() => {
                 this.connect(() => {
                     this.isBusyChangingSymbol = false;
                 });
+            });
+            //
+            const changedAt = (new Date()).getTime();
+            this.symbolChangeLog.items.unshift({
+                id: `${changedAt}:${this.symbolChangeLog.items.length}`,
+                from: prevSymbolKey,
+                to: symbol,
+                at: changedAt,
+            });
+            while (this.symbolChangeLog.items.length >= this.symbolChangeLog.hardLimit) {
+                this.symbolChangeLog.items.pop();
+            }
+            this._persistState();
+        },
+        clearSymbolChangeLog() {
+            this.symbolChangeLog.items = [];
+            this._persistState();
+        },
+        _persistState() {
+            if (!isClientSide()) {
+                return;
+            }
+            localStorage.setItem('symbolChangeLog', JSON.stringify(this.symbolChangeLog.items.map(e => {
+                return [e.from, e.to, e.at];
+            })));
+        },
+        loadPersistedState() {
+            if (!isClientSide()) {
+                return;
+            }
+            const symbolChangeLog = jsonDecodeSafe(localStorage.getItem('symbolChangeLog'), []);
+            this.symbolChangeLog.items = symbolChangeLog.map((e, i) => {
+                return {
+                    id: `${e[2]}:${i}`,
+                    from: e[0],
+                    to: e[1],
+                    at: e[2],
+                };
             });
         },
     },
