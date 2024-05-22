@@ -99,6 +99,10 @@
 
 <script setup>
 
+useHead({
+  title: 'Order Book',
+});
+
 import {useDisplay} from "vuetify";
 
 const orderBookStore = useOrderBookStore();

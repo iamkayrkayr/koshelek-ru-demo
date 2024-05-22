@@ -44,6 +44,10 @@
 
 <script setup>
 
+useHead({
+  title: 'Настройки',
+});
+
 import {useOrderBookStore} from "~/stores/order-book.js";
 import SymbolChangeLogTable from "~/components/settings/SymbolChangeLogTable.vue";
 
