@@ -28,6 +28,7 @@
       >
         <v-slide-group-item
             v-slot="{ isSelected }"
+            :value="0"
         >
           <v-btn
               :color="isSelected ? 'primary' : undefined"
@@ -40,6 +41,7 @@
         </v-slide-group-item>
         <v-slide-group-item
             v-slot="{ isSelected }"
+            :value="1"
         >
           <v-btn
               :color="isSelected ? 'primary' : undefined"
@@ -96,6 +98,11 @@ const {
   smAndUp,
 } = useDisplay();
 
-const selectedView = ref(0);
+const selectedView = ref(undefined);
+
+onMounted(() => {
+  // fix: v-model for v-slide-group is not applied initially
+  selectedView.value = 0;
+});
 
 </script>
