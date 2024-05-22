@@ -20,7 +20,7 @@
                 :key="item.id"
             >
               <td>{{ displayDatetime(item.at) }}</td>
-              <td>{{ item.from }} -> {{ item.to }}</td>
+              <td>{{ symbolDisplayName(item.from) }} -> {{ symbolDisplayName(item.to) }}</td>
             </tr>
             </tbody>
           </v-table>
@@ -52,7 +52,7 @@
 
 <script setup>
 
-defineProps({
+const props = defineProps({
   items: {
     type: Array,
     required: true,
@@ -61,10 +61,18 @@ defineProps({
     type: Number,
     required: true,
   },
+  symbolsInfoMap: {
+    type: Object,
+    required: true,
+  },
 });
 
 function displayDatetime(ts) {
   return (new Date(ts)).toLocaleString();
+}
+
+function symbolDisplayName(key) {
+  return props.symbolsInfoMap[key].title;
 }
 
 const displayTz = computed(() => {

@@ -4,9 +4,20 @@
             backgroundImage: makeRowBackgroundImage(),
     }"
   >
-    <td>{{ priceDisplay }}</td>
-    <td class="text-end">{{ quantityDisplay }}</td>
-    <td class="text-end">{{ totalDisplay }}</td>
+    <td
+        v-if="isColumnVisible('price')"
+    >{{ priceDisplay }}
+    </td>
+    <td
+        v-if="isColumnVisible('quantity')"
+        class="text-end"
+    >{{ quantityDisplay }}
+    </td>
+    <td
+        v-if="isColumnVisible('total')"
+        class="text-end"
+    >{{ totalDisplay }}
+    </td>
   </tr>
 </template>
 
@@ -26,7 +37,15 @@ const props = defineProps({
       return ['ask', 'bid'].includes(value)
     },
   },
+  columns: {
+    type: Array,
+    default: undefined,
+  },
 });
+
+function isColumnVisible(column) {
+  return (!props.columns) || (props.columns.includes(column));
+}
 
 const price = computed(() => props.entry[0]);
 const priceDisplay = computed(() => {

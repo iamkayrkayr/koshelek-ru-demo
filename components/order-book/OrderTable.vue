@@ -4,13 +4,22 @@
   >
     <thead>
     <tr>
-      <th class="w-25">
+      <th
+          v-if="isColumnVisible('price')"
+          class="w-25"
+      >
         Price
       </th>
-      <th class="w-25 text-end">
+      <th
+          v-if="isColumnVisible('quantity')"
+          class="w-25 text-end"
+      >
         Quantity
       </th>
-      <th class="text-end">
+      <th
+          v-if="isColumnVisible('total')"
+          class="text-end"
+      >
         Total
       </th>
     </tr>
@@ -22,12 +31,15 @@
         :entry="row"
         :quantity-erp="quantityErp(row)"
         :theme="theme"
+        :columns="visibleColumns"
     />
     </tbody>
   </v-table>
 </template>
 
 <script setup>
+
+import {useDisplay} from "vuetify";
 
 const props = defineProps({
   rows: {
@@ -40,6 +52,22 @@ const props = defineProps({
     },
   },
 });
+
+const {
+  smAndUp,
+} = useDisplay();
+
+const visibleColumns = computed(() => {
+  return [
+    'price',
+    smAndUp.value ? 'quantity' : undefined,
+    'total',
+  ].filter(e => !!e);
+});
+
+function isColumnVisible(column) {
+  return visibleColumns.value.includes(column);
+}
 
 const minQuantity = computed(() => {
   return Math.min(...(props.rows.map(rowQuantity)));
@@ -54,10 +82,6 @@ function quantityErp(row) {
     return 0;
   }
   return (rowQuantity(row) - minQuantity.value) / range;
-}
-
-function rowTotal(row) {
-  return row[0] * row[1];
 }
 
 function rowQuantity(row) {

@@ -17,7 +17,7 @@
           <v-col cols="12" md="8">
             <v-select
                 :model-value="orderBookStore.selectedSymbolInfo"
-                :items="symbolOptions"
+                :items="orderBookStore.symbolOptions"
                 variant="solo-filled"
                 :loading="orderBookStore.isBusyChangingSymbol"
                 :disabled="orderBookStore.isBusyChangingSymbol"
@@ -34,6 +34,7 @@
         <SymbolChangeLogTable
             :items="orderBookStore.symbolChangeLog.items"
             :items-per-page="orderBookStore.symbolChangeLog.perPage"
+            :symbols-info-map="symbolsInfoMap"
             @clear="() => orderBookStore.clearSymbolChangeLog()"
         />
       </v-col>
@@ -48,10 +49,16 @@ import SymbolChangeLogTable from "~/components/settings/SymbolChangeLogTable.vue
 
 const orderBookStore = useOrderBookStore();
 
-const symbolOptions = orderBookStore.symbolOptions;
-
 function onSymbolChange(newSymbol) {
   orderBookStore.updateSymbol(newSymbol);
 }
+
+const symbolsInfoMap = computed(() => {
+  return Object.fromEntries(
+      orderBookStore.symbolOptions.map(e => {
+        return [e.value, e];
+      })
+  );
+});
 
 </script>
