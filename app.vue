@@ -31,7 +31,10 @@
       </v-toolbar>
 
       <v-main>
-        <v-container>
+        <v-container
+            id="main"
+            class="h-100"
+        >
           <NuxtPage/>
         </v-container>
       </v-main>

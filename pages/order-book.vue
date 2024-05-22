@@ -1,8 +1,24 @@
 <template>
   <div class="pt-8">
-    <h1
-        class="mb-4 text-h5 text-sm-h4"
-    >Биржевой стакан - {{ orderBookStore.selectedSymbolInfo.title }}</h1>
+    <div
+        class="mb-4 d-md-flex flex-sm-row"
+    >
+      <h1
+          class="mb-2 mb-sm-4 text-h5 text-sm-h4"
+      >Биржевой стакан - {{ orderBookStore.selectedSymbolInfo.title }}</h1>
+
+      <v-spacer/>
+
+      <v-select
+          v-model="orderBookStore.orderBookDisplayConfig.limit"
+          style="max-width: 320px;"
+          :items="orderBookStore.orderBookDisplayConfig.limitOptions"
+          label="Показывать строк:"
+          variant="solo-filled"
+          :loading="!isTableReady"
+          :disabled="!isTableReady"
+      ></v-select>
+    </div>
 
     <v-sheet
         class="d-block d-sm-none"
@@ -73,6 +89,8 @@
 import {useDisplay} from "vuetify";
 
 const orderBookStore = useOrderBookStore();
+
+const isTableReady = computed(() => (orderBookStore.isWsConnected && (orderBookStore.bids.length > 0)));
 
 const {
   smAndUp,

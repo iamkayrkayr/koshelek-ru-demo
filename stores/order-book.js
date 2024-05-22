@@ -4,6 +4,15 @@ import {isClientSide, jsonDecodeSafe} from "~/utils/support.js";
 
 export const useOrderBookStore = defineStore('orderBookStore', {
     state: () => {
+
+        const orderBookLimitOptions = [
+            20,
+            100,
+            500,
+            1000,
+        ];
+        const orderBookLimit = orderBookLimitOptions[0];
+
         return ({
             _binanceApiInstance: undefined,
             isWsConnected: false,
@@ -35,14 +44,15 @@ export const useOrderBookStore = defineStore('orderBookStore', {
             hadFirstMatchingEvent: false,
             bids: [],
             asks: [],
-            displayConfig: {
-                limit: 15,
+            orderBookDisplayConfig: {
+                limit: orderBookLimit,
+                limitOptions: orderBookLimitOptions,
             },
         });
     },
     getters: {
-        bidsSlice: state => state.bids.slice(0, state.displayConfig.limit),
-        asksSlice: state => state.asks.slice(0, state.displayConfig.limit),
+        bidsSlice: state => state.bids.slice(0, state.orderBookDisplayConfig.limit),
+        asksSlice: state => state.asks.slice(0, state.orderBookDisplayConfig.limit),
         symbol: state => state.selectedSymbolKey,
         selectedSymbolInfo: state => state.symbolOptions.find(option => (option.value === state.selectedSymbolKey)),
     },
@@ -121,7 +131,6 @@ export const useOrderBookStore = defineStore('orderBookStore', {
                 toRaw(this.bids),
                 decoded.b,
                 {
-                    limit: this.displayConfig.limit,
                     isDesc: true,
                 },
             );
@@ -129,7 +138,6 @@ export const useOrderBookStore = defineStore('orderBookStore', {
                 toRaw(this.asks),
                 decoded.a,
                 {
-                    limit: this.displayConfig.limit,
                     isDesc: false,
                 },
             );
