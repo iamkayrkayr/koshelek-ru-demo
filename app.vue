@@ -3,25 +3,23 @@
     <v-app>
       <v-toolbar>
         <v-container class="d-flex align-center">
-          <nuxt-link
-              to="/"
-          >
+          <div>
             <v-img
                 :width="128"
                 src="/img/logo.svg"
             />
-          </nuxt-link>
+          </div>
 
           <v-spacer/>
 
           <nav class="d-none d-sm-block">
             <v-btn
-                to="/settings"
-            >Настройки
+                to="/"
+            >Order Book
             </v-btn>
             <v-btn
-                to="/order-book"
-            >Order Book
+                to="/settings"
+            >Настройки
             </v-btn>
           </nav>
 
@@ -47,12 +45,12 @@
           class="d-flex d-sm-none"
       >
         <v-btn
-            to="/settings"
-        >Настройки
+            to="/"
+        >Order Book
         </v-btn>
         <v-btn
-            to="/order-book"
-        >Order Book
+            to="/settings"
+        >Настройки
         </v-btn>
       </v-bottom-navigation>
 

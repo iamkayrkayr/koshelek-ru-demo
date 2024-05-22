@@ -36,6 +36,7 @@
         :quantity-erp="quantityErp(row)"
         :theme="theme"
         :columns="visibleColumns"
+        :symbol-info="symbolInfo"
     />
     </tbody>
   </v-table>
@@ -54,6 +55,10 @@ const props = defineProps({
     validator(value) {
       return ['ask', 'bid'].includes(value)
     },
+  },
+  symbolInfo: {
+    type: Object,
+    required: true,
   },
 });
 
@@ -95,7 +100,7 @@ function rowQuantity(row) {
   return row[1];
 }
 
-function onScreenResize(...args) {
+function onScreenResize() {
   const appLayoutHeight = window.document.body.scrollHeight;
   const viewportHeight = window.innerHeight;
 
@@ -114,7 +119,6 @@ function onScreenResize(...args) {
   } else {
     tableHeight.value = calculatedHeight;
   }
-
 }
 
 </script>

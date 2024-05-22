@@ -41,15 +41,21 @@ const props = defineProps({
     type: Array,
     default: undefined,
   },
+  symbolInfo: {
+    type: Object,
+    required: true,
+  },
 });
 
 function isColumnVisible(column) {
   return (!props.columns) || (props.columns.includes(column));
 }
 
+const pricePrecision = computed(() => props.symbolInfo.pricePrecision);
+
 const price = computed(() => props.entry[0]);
 const priceDisplay = computed(() => {
-  return Number(price.value).toFixed(2);
+  return Number(price.value).toFixed(pricePrecision.value);
 });
 
 const quantity = computed(() => props.entry[1]);

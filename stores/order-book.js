@@ -22,14 +22,17 @@ export const useOrderBookStore = defineStore('orderBookStore', {
                 {
                     title: 'BTC/USDT',
                     value: 'btcusdt',
+                    pricePrecision: 2,
                 },
                 {
                     title: 'BNB/BTC',
                     value: 'bnbbtc',
+                    pricePrecision: 6,
                 },
                 {
                     title: 'ETH/BTC',
                     value: 'ethbtc',
+                    pricePrecision: 5,
                 },
             ],
             selectedSymbolKey: 'btcusdt',
