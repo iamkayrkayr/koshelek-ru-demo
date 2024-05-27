@@ -6,6 +6,7 @@
 Вдохновение: order-book в Binance - https://www.binance.com/ru/orderbook/BTC_USDT
 
 * Адаптивность
+* Single-page
 * Страницы подгружаются динамически отдельными чанками
 * Интеграция с Binance API - используется web-socket для получения данных в реальном времени
 * SSR - для live-демо работает node-js сервер, посаженный как отдельный процесс в supervisor
